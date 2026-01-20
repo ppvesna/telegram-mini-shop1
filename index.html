@@ -4,36 +4,72 @@
   <meta charset="UTF-8">
   <title>Mini Shop</title>
 
- 8408699573:AAEAAXUciODjcW7-xe_9JYXxW8I2n9bfNP8
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     body {
       font-family: Arial;
-      padding: 20px;
+      padding: 15px;
+      background: #f5f5f5;
     }
+
+    h2 {
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .price {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
     button {
-      padding: 12px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #2a9df4;
+      color: white;
       font-size: 16px;
-      margin-top: 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
 
-  <h2>🛒 Мой магазин</h2>
-  <p>Нажми кнопку ниже:</p>
+<h2>🛒 Магазин</h2>
 
-  <button onclick="buy()">Купить товар</button>
+<div class="card">
+  <h3>Товар 1</h3>
+  <p>Описание товара</p>
+  <div class="price">100 ₽</div>
+  <button onclick="buy('Товар 1', 100)">Купить</button>
+</div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+<div class="card">
+  <h3>Товар 2</h3>
+  <p>Описание товара</p>
+  <div class="price">200 ₽</div>
+  <button onclick="buy('Товар 2', 200)">Купить</button>
+</div>
 
-    function buy() {
-      tg.sendData("Пользователь нажал Купить");
-    }
-  </script>
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  function buy(name, price) {
+    tg.sendData(JSON.stringify({
+      product: name,
+      price: price
+    }));
+  }
+</script>
 
 </body>
 </html>
