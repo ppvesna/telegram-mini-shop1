@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Shop</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h2>🛒 Магазин</h2>
+
+  <button onclick="buy('Товар 1')">Купить товар 1</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
