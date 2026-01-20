@@ -1,13 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Проверка</title>
+  <title>Магазин</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      background: #f7f7f7;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .category {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .product {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    button {
+      margin-top: 5px;
+      padding: 8px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      background: #0088cc;
+      color: white;
+      font-size: 16px;
+    }
+
+    #cart {
+      margin-top: 20px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
-<h1>✅ САЙТ РАБОТАЕТ</h1>
-<p>Если ты это видишь — GitHub Pages работает.</p>
+<h2>🛒 Магазин</h2>
+
+<div class="category">🍔 Категория 1</div>
+
+<div class="product">
+  Товар 1 — 500 ₽
+  <button onclick="addToCart('Товар 1', 500)">Добавить</button>
+</div>
+
+<div class="product">
+  Товар 2 — 700 ₽
+  <button onclick="addToCart('Товар 2', 700)">Добавить</button>
+</div>
+
+<div class="category">📦 Категория 2</div>
+
+<div class="product">
+  Товар 3 — 1200 ₽
+  <button onclick="addToCart('Товар 3', 1200)">Добавить</button>
+</div>
+
+<div id="cart">
+  <h3>🧺 Корзина</h3>
+  <div id="cartItems">Пусто</div>
+  <b id="total"></b>
+  <button onclick="checkout()">Оформить заказ</button>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  let cart = [];
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    renderCart();
+  }
+
+  function renderCart() {
+    let html = "";
+    let total = 0;
+
+    cart.forEach((item, i) => {
+      html += `${i + 1}. ${item.name} — ${item.price} ₽<br>`;
+      total += item.price;
+    });
+
+    document.getElementById("cartItems").innerHTML =
+      html || "Пусто";
+
+    document.getElementById("total").innerText =
+      total > 0 ? "Итого: " + total + " ₽" : "";
+  }
+
+  function checkout() {
+    if (cart.length === 0) {
+      alert("Корзина пуста");
+      return;
+    }
+
+    tg.sendData(JSON.stringify(cart));
+    tg.close();
+  }
+</script>
 
 </body>
 </html>
