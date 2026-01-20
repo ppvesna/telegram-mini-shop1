@@ -5,33 +5,11 @@
   <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      font-family: Arial;
-      padding: 10px;
-    }
-
-    .category {
-      margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .product {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-    }
-
-    button {
-      margin-top: 5px;
-      padding: 8px;
-      width: 100%;
-      background: #0088cc;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
+    body { font-family: Arial; padding: 10px; }
+    .category { font-size: 18px; margin-top: 20px; }
+    .product { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    button { padding: 6px; width: 100%; margin-top: 5px; }
+    #cart { margin-top: 20px; border-top: 2px solid #000; padding-top: 10px; }
   </style>
 </head>
 <body>
@@ -41,42 +19,57 @@
 <div class="category">🍔 Категория 1</div>
 
 <div class="product">
-  <b>Товар 1</b><br>
-  Цена: 500 ₽
-  <button onclick="buy('Товар 1', 500)">Купить</button>
+  Товар 1 — 500 ₽
+  <button onclick="addToCart('Товар 1', 500)">Добавить</button>
 </div>
 
 <div class="product">
-  <b>Товар 2</b><br>
-  Цена: 700 ₽
-  <button onclick="buy('Товар 2', 700)">Купить</button>
+  Товар 2 — 700 ₽
+  <button onclick="addToCart('Товар 2', 700)">Добавить</button>
 </div>
 
 <div class="category">📦 Категория 2</div>
 
 <div class="product">
-  <b>Товар 3</b><br>
-  Цена: 1200 ₽
-  <button onclick="buy('Товар 3', 1200)">Купить</button>
+  Товар 3 — 1200 ₽
+  <button onclick="addToCart('Товар 3', 1200)">Добавить</button>
 </div>
 
-<div class="product">
-  <b>Товар 4</b><br>
-  Цена: 900 ₽
-  <button onclick="buy('Товар 4', 900)">Купить</button>
+<div id="cart">
+  <h3>🛒 Корзина</h3>
+  <div id="cartItems">Пусто</div>
+  <b id="total"></b>
+  <button onclick="checkout()">Оформить заказ</button>
 </div>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  function buy(name, price) {
-    const data = {
-      name: name,
-      price: price
-    };
+  let cart = [];
 
-    tg.sendData(JSON.stringify(data));
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    renderCart();
+  }
+
+  function renderCart() {
+    const cartDiv = document.getElementById("cartItems");
+    let html = "";
+    let total = 0;
+
+    cart.forEach((item, i) => {
+      html += `${i+1}. ${item.name} — ${item.price} ₽<br>`;
+      total += item.price;
+    });
+
+    cartDiv.innerHTML = html || "Пусто";
+    document.getElementById("total").innerText =
+      total > 0 ? "Итого: " + total + " ₽" : "";
+  }
+
+  function checkout() {
+    tg.sendData(JSON.stringify(cart));
   }
 </script>
 
