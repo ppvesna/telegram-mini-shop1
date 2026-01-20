@@ -2,112 +2,83 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Mini Shop</title>
-
+  <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     body {
       font-family: Arial;
-      padding: 15px;
-      background: #f5f5f5;
+      padding: 10px;
     }
 
-    h2 {
-      text-align: center;
-    }
-
-    .card {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    .price {
+    .category {
+      margin-top: 20px;
+      font-size: 20px;
       font-weight: bold;
-      margin: 5px 0;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
     }
 
     button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background: #2a9df4;
-      color: white;
-      font-size: 16px;
-      border-radius: 6px;
       margin-top: 5px;
-    }
-
-    .cart {
-      background: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 20px;
+      padding: 8px;
+      width: 100%;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
-<h2>🛒 Магазин</h2>
+<h2>🛍 Магазин</h2>
 
-<div class="card">
-  <h3>Товар 1</h3>
-  <div class="price">100 ₽</div>
-  <button onclick="addToCart('Товар 1', 100)">Добавить</button>
+<div class="category">🍔 Категория 1</div>
+
+<div class="product">
+  <b>Товар 1</b><br>
+  Цена: 500 ₽
+  <button onclick="buy('Товар 1', 500)">Купить</button>
 </div>
 
-<div class="card">
-  <h3>Товар 2</h3>
-  <div class="price">200 ₽</div>
-  <button onclick="addToCart('Товар 2', 200)">Добавить</button>
+<div class="product">
+  <b>Товар 2</b><br>
+  Цена: 700 ₽
+  <button onclick="buy('Товар 2', 700)">Купить</button>
 </div>
 
-<div class="cart">
-  <h3>🧺 Корзина</h3>
-  <div id="cartItems">Пусто</div>
-  <p><b>Итого:</b> <span id="total">0</span> ₽</p>
-  <button onclick="checkout()">Оформить заказ</button>
+<div class="category">📦 Категория 2</div>
+
+<div class="product">
+  <b>Товар 3</b><br>
+  Цена: 1200 ₽
+  <button onclick="buy('Товар 3', 1200)">Купить</button>
+</div>
+
+<div class="product">
+  <b>Товар 4</b><br>
+  Цена: 900 ₽
+  <button onclick="buy('Товар 4', 900)">Купить</button>
 </div>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  let cart = [];
-  let total = 0;
+  function buy(name, price) {
+    const data = {
+      name: name,
+      price: price
+    };
 
-  function addToCart(name, price) {
-    cart.push({ name, price });
-    total += price;
-    renderCart();
-  }
-
-  function renderCart() {
-    const cartDiv = document.getElementById("cartItems");
-
-    if (cart.length === 0) {
-      cartDiv.innerHTML = "Пусто";
-      return;
-    }
-
-    cartDiv.innerHTML = cart
-      .map(item => `• ${item.name} — ${item.price} ₽`)
-      .join("<br>");
-
-    document.getElementById("total").innerText = total;
-  }
-
-  function checkout() {
-    tg.sendData(JSON.stringify({
-      items: cart,
-      total: total
-    }));
+    tg.sendData(JSON.stringify(data));
   }
 </script>
 
 </body>
-  
 </html>
