@@ -21,13 +21,13 @@
       background: white;
       padding: 15px;
       border-radius: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
     .price {
       font-weight: bold;
-      margin: 10px 0;
+      margin: 5px 0;
     }
 
     button {
@@ -38,6 +38,14 @@
       color: white;
       font-size: 16px;
       border-radius: 6px;
+      margin-top: 5px;
+    }
+
+    .cart {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -47,26 +55,55 @@
 
 <div class="card">
   <h3>Товар 1</h3>
-  <p>Описание товара</p>
   <div class="price">100 ₽</div>
-  <button onclick="buy('Товар 1', 100)">Купить</button>
+  <button onclick="addToCart('Товар 1', 100)">Добавить</button>
 </div>
 
 <div class="card">
   <h3>Товар 2</h3>
-  <p>Описание товара</p>
   <div class="price">200 ₽</div>
-  <button onclick="buy('Товар 2', 200)">Купить</button>
+  <button onclick="addToCart('Товар 2', 200)">Добавить</button>
+</div>
+
+<div class="cart">
+  <h3>🧺 Корзина</h3>
+  <div id="cartItems">Пусто</div>
+  <p><b>Итого:</b> <span id="total">0</span> ₽</p>
+  <button onclick="checkout()">Оформить заказ</button>
 </div>
 
 <script>
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  function buy(name, price) {
+  let cart = [];
+  let total = 0;
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    total += price;
+    renderCart();
+  }
+
+  function renderCart() {
+    const cartDiv = document.getElementById("cartItems");
+
+    if (cart.length === 0) {
+      cartDiv.innerHTML = "Пусто";
+      return;
+    }
+
+    cartDiv.innerHTML = cart
+      .map(item => `• ${item.name} — ${item.price} ₽`)
+      .join("<br>");
+
+    document.getElementById("total").innerText = total;
+  }
+
+  function checkout() {
     tg.sendData(JSON.stringify({
-      product: name,
-      price: price
+      items: cart,
+      total: total
     }));
   }
 </script>
