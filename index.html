@@ -1,41 +1,13 @@
-<script>
-  
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Проверка</title>
+</head>
+<body>
 
-  let cart = [];
+<h1>✅ САЙТ РАБОТАЕТ</h1>
+<p>Если ты это видишь — GitHub Pages работает.</p>
 
-  function addToCart(name, price) {
-    cart.push({ name, price });
-    renderCart();
-  }
-
-  function renderCart() {
-    const cartDiv = document.getElementById("cartItems");
-    let html = "";
-    let total = 0;
-
-    cart.forEach((item, i) => {
-      html += `${i+1}. ${item.name} — ${item.price} ₽<br>`;
-      total += item.price;
-    });
-
-    cartDiv.innerHTML = html || "Пусто";
-    document.getElementById("total").innerText =
-      total > 0 ? "Итого: " + total + " ₽" : "";
-  }
-
-  function checkout() {
-    if (cart.length === 0) {
-      alert("Корзина пуста");
-      return;
-    }
-
-    tg.sendData(JSON.stringify(cart));
-
-    // 🔥 ВАЖНО: закрываем Mini App вручную
-    // tg.close();
-  }
-  
-</script>
+</body>
+</html>
