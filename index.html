@@ -1,49 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Магазин</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body { font-family: Arial; padding: 10px; }
-    .category { font-size: 18px; margin-top: 20px; }
-    .product { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-    button { padding: 6px; width: 100%; margin-top: 5px; }
-    #cart { margin-top: 20px; border-top: 2px solid #000; padding-top: 10px; }
-  </style>
-</head>
-<body>
-
-<h2>🛍 Магазин</h2>
-
-<div class="category">🍔 Категория 1</div>
-
-<div class="product">
-  Товар 1 — 500 ₽
-  <button onclick="addToCart('Товар 1', 500)">Добавить</button>
-</div>
-
-<div class="product">
-  Товар 2 — 700 ₽
-  <button onclick="addToCart('Товар 2', 700)">Добавить</button>
-</div>
-
-<div class="category">📦 Категория 2</div>
-
-<div class="product">
-  Товар 3 — 1200 ₽
-  <button onclick="addToCart('Товар 3', 1200)">Добавить</button>
-</div>
-
-<div id="cart">
-  <h3>🛒 Корзина</h3>
-  <div id="cartItems">Пусто</div>
-  <b id="total"></b>
-  <button onclick="checkout()">Оформить заказ</button>
-</div>
-
 <script>
   const tg = window.Telegram.WebApp;
+  tg.ready();
   tg.expand();
 
   let cart = [];
@@ -69,9 +26,14 @@
   }
 
   function checkout() {
+    if (cart.length === 0) {
+      alert("Корзина пуста");
+      return;
+    }
+
     tg.sendData(JSON.stringify(cart));
+
+    // 🔥 ВАЖНО: закрываем Mini App вручную
+    tg.close();
   }
 </script>
-
-</body>
-</html>
