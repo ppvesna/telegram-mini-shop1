@@ -7,30 +7,62 @@
 </head>
 <body>
 
-<h2>🛒 Магазин</h2>
+<h2>Категории</h2>
+<div id="categories"></div>
 
-<div>
-    <p>Товар 1 — 100 ₽</p>
-    <p>Товар 2 — 200 ₽</p>
-</div>
+<h3>Товары</h3>
+<div id="products"></div>
 
-<button id="orderBtn">Оформить заказ</button>
+<button onclick="sendOrder()">Оформить заказ</button>
 
 <script>
     const tg = window.Telegram.WebApp;
-
-    // ОБЯЗАТЕЛЬНО
     tg.ready();
 
-    const order = [
-        { name: "Товар 1", price: 100 },
-        { name: "Товар 2", price: 200 }
+    let cart = [];
+
+    const categories = [
+        { id: 1, name: "Одежда" },
+        { id: 2, name: "Электроника" }
     ];
 
-    document.getElementById("orderBtn").addEventListener("click", () => {
-        tg.sendData(JSON.stringify(order));
-        tg.close();
+    const products = [
+        { id: 1, name: "Футболка", price: 1200, category_id: 1 },
+        { id: 2, name: "Куртка", price: 3500, category_id: 1 },
+        { id: 3, name: "Наушники", price: 2500, category_id: 2 },
+        { id: 4, name: "Мышь", price: 1500, category_id: 2 }
+    ];
+
+    const catDiv = document.getElementById("categories");
+    const prodDiv = document.getElementById("products");
+
+    categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.innerText = cat.name;
+        btn.onclick = () => showProducts(cat.id);
+        catDiv.appendChild(btn);
     });
+
+    function showProducts(catId) {
+        prodDiv.innerHTML = "";
+        products.filter(p => p.category_id === catId)
+            .forEach(p => {
+                const div = document.createElement("div");
+                div.innerHTML = `${p.name} — ${p.price} ₽ 
+                <button onclick='addToCart(${JSON.stringify(p)})'>+</button>`;
+                prodDiv.appendChild(div);
+            });
+    }
+
+    function addToCart(product) {
+        cart.push(product);
+        alert("Добавлено в корзину");
+    }
+
+    function sendOrder() {
+        tg.sendData(JSON.stringify(cart));
+        tg.close();
+    }
 </script>
 
 </body>
