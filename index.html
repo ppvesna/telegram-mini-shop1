@@ -4,20 +4,18 @@
   <meta charset="UTF-8">
   <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
       font-family: Arial;
       background: #f5f5f5;
       padding: 10px;
     }
-
-    h2 {
-      text-align: center;
-    }
+    h2 { text-align: center; }
 
     .card {
       background: white;
-      padding: 15px;
+      padding: 12px;
       margin: 10px 0;
       border-radius: 10px;
     }
@@ -25,7 +23,7 @@
     button {
       width: 100%;
       padding: 10px;
-      margin-top: 8px;
+      margin-top: 6px;
       background: #0088cc;
       color: white;
       border: none;
@@ -33,15 +31,13 @@
       font-size: 16px;
     }
 
-    .back {
-      background: #555;
-    }
+    .back { background: #777; }
+    .cart { background: #28a745; }
   </style>
 </head>
 <body>
 
 <h2 id="title">Категории</h2>
-
 <div id="content"></div>
 
 <script>
@@ -65,6 +61,8 @@
     }
   };
 
+  let cart = [];
+
   const content = document.getElementById("content");
   const title = document.getElementById("title");
 
@@ -78,37 +76,28 @@
       btn.onclick = () => showProducts(key);
       content.appendChild(btn);
     }
+
+    const cartBtn = document.createElement("button");
+    cartBtn.className = "cart";
+    cartBtn.innerText = "🛒 Корзина";
+    cartBtn.onclick = showCart;
+    content.appendChild(cartBtn);
   }
 
-  function showProducts(categoryKey) {
-    const category = categories[categoryKey];
-    title.innerText = category.name;
+  function showProducts(key) {
+    const cat = categories[key];
+    title.innerText = cat.name;
     content.innerHTML = "";
 
-    category.products.forEach(p => {
+    cat.products.forEach(p => {
       const div = document.createElement("div");
       div.className = "card";
       div.innerHTML = `
         <b>${p.name}</b><br>
         Цена: ${p.price} ₽
-        <button onclick="addToCart('${p.name}', ${p.price})">Добавить</button>
+        <button onclick="addToCart('${p.name}', ${p.price})">
+          Добавить
+        </button>
       `;
       content.appendChild(div);
     });
-
-    const back = document.createElement("button");
-    back.className = "back";
-    back.innerText = "← Назад";
-    back.onclick = showCategories;
-    content.appendChild(back);
-  }
-
-  function addToCart(name, price) {
-    alert(`Добавлено: ${name} — ${price} ₽`);
-  }
-
-  showCategories();
-</script>
-
-</body>
-</html>
