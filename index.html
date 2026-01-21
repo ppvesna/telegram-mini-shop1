@@ -7,6 +7,7 @@
     <style>
         body { font-family: Arial; padding: 15px; }
         button { margin: 5px 0; padding: 6px 10px; }
+        input { width: 100%; padding: 6px; margin: 5px 0; }
         .product { margin-bottom: 8px; }
         .cart { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
     </style>
@@ -22,7 +23,12 @@
 <div class="cart">
     <h3>🛒 Корзина</h3>
     <div id="cart"></div>
-    <b id="total"></b><br><br>
+    <b id="total"></b>
+
+    <h3>📋 Данные для заказа</h3>
+    <input id="name" placeholder="Ваше имя">
+    <input id="phone" placeholder="Телефон">
+
     <button onclick="sendOrder()">Оформить заказ</button>
 </div>
 
@@ -96,12 +102,26 @@
     }
 
     function sendOrder() {
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+
+        if (!name || !phone) {
+            alert("Введите имя и телефон");
+            return;
+        }
+
         if (cart.length === 0) {
             alert("Корзина пуста");
             return;
         }
 
-        tg.sendData(JSON.stringify(cart));
+        const order = {
+            name,
+            phone,
+            items: cart
+        };
+
+        tg.sendData(JSON.stringify(order));
         tg.close();
     }
 </script>
