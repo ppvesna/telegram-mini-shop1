@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Магазин</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial; padding: 15px; }
+        button { margin: 5px 0; padding: 6px 10px; }
+        .product { margin-bottom: 8px; }
+        .cart { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+    </style>
 </head>
 <body>
 
@@ -13,7 +19,12 @@
 <h3>Товары</h3>
 <div id="products"></div>
 
-<button onclick="sendOrder()">Оформить заказ</button>
+<div class="cart">
+    <h3>🛒 Корзина</h3>
+    <div id="cart"></div>
+    <b id="total"></b><br><br>
+    <button onclick="sendOrder()">Оформить заказ</button>
+</div>
 
 <script>
     const tg = window.Telegram.WebApp;
@@ -35,6 +46,8 @@
 
     const catDiv = document.getElementById("categories");
     const prodDiv = document.getElementById("products");
+    const cartDiv = document.getElementById("cart");
+    const totalDiv = document.getElementById("total");
 
     categories.forEach(cat => {
         const btn = document.createElement("button");
@@ -48,18 +61,46 @@
         products.filter(p => p.category_id === catId)
             .forEach(p => {
                 const div = document.createElement("div");
-                div.innerHTML = `${p.name} — ${p.price} ₽ 
-                <button onclick='addToCart(${JSON.stringify(p)})'>+</button>`;
+                div.className = "product";
+                div.innerHTML = `
+                    ${p.name} — ${p.price} ₽
+                    <button onclick='addToCart(${JSON.stringify(p)})'>+</button>
+                `;
                 prodDiv.appendChild(div);
             });
     }
 
     function addToCart(product) {
         cart.push(product);
-        alert("Добавлено в корзину");
+        renderCart();
+    }
+
+    function renderCart() {
+        cartDiv.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            total += item.price;
+            const div = document.createElement("div");
+            div.innerHTML = `${item.name} — ${item.price} ₽ 
+                <button onclick="removeItem(${index})">❌</button>`;
+            cartDiv.appendChild(div);
+        });
+
+        totalDiv.innerText = "Итого: " + total + " ₽";
+    }
+
+    function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
     }
 
     function sendOrder() {
+        if (cart.length === 0) {
+            alert("Корзина пуста");
+            return;
+        }
+
         tg.sendData(JSON.stringify(cart));
         tg.close();
     }
