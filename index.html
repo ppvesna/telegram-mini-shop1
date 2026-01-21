@@ -1,65 +1,114 @@
-<!-- version 3 -->
 <!DOCTYPE html>
-<html>
-...
-<!DOCTYPE html>
-
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <title>Магазин</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
   <style>
     body {
       font-family: Arial;
-      padding: 10px;
       background: #f5f5f5;
-    }
-    .product {
-      background: white;
       padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
     }
+
+    h2 {
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
     button {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
+      margin-top: 8px;
       background: #0088cc;
       color: white;
       border: none;
       border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .back {
+      background: #555;
     }
   </style>
 </head>
 <body>
 
-<h2>🛒 Магазин</h2>
+<h2 id="title">Категории</h2>
 
-<div class="product">
-  Товар 1 — 500 ₽
-  <button onclick="buy('Товар 1', 500)">Добавить</button>
-</div>
-
-<div class="product">
-  Товар 2 — 700 ₽
-  <button onclick="buy('Товар 2', 700)">Добавить</button>
-</div>
+<div id="content"></div>
 
 <script>
   const tg = window.Telegram.WebApp;
-  tg.ready();
   tg.expand();
 
-  let cart = [];
+  const categories = {
+    clothes: {
+      name: "🧢 Одежда",
+      products: [
+        { name: "Футболка", price: 1000 },
+        { name: "Кепка", price: 700 }
+      ]
+    },
+    tech: {
+      name: "📱 Электроника",
+      products: [
+        { name: "Наушники", price: 2500 },
+        { name: "Пауэрбанк", price: 3000 }
+      ]
+    }
+  };
 
-  function buy(name, price) {
-    cart.push({ name, price });
-    alert("Добавлено: " + name);
+  const content = document.getElementById("content");
+  const title = document.getElementById("title");
+
+  function showCategories() {
+    title.innerText = "Категории";
+    content.innerHTML = "";
+
+    for (let key in categories) {
+      const btn = document.createElement("button");
+      btn.innerText = categories[key].name;
+      btn.onclick = () => showProducts(key);
+      content.appendChild(btn);
+    }
   }
+
+  function showProducts(categoryKey) {
+    const category = categories[categoryKey];
+    title.innerText = category.name;
+    content.innerHTML = "";
+
+    category.products.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <b>${p.name}</b><br>
+        Цена: ${p.price} ₽
+        <button onclick="addToCart('${p.name}', ${p.price})">Добавить</button>
+      `;
+      content.appendChild(div);
+    });
+
+    const back = document.createElement("button");
+    back.className = "back";
+    back.innerText = "← Назад";
+    back.onclick = showCategories;
+    content.appendChild(back);
+  }
+
+  function addToCart(name, price) {
+    alert(`Добавлено: ${name} — ${price} ₽`);
+  }
+
+  showCategories();
 </script>
 
-  
 </body>
 </html>
