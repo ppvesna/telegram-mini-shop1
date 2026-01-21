@@ -101,3 +101,65 @@
       `;
       content.appendChild(div);
     });
+
+    backButton();
+  }
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    alert("Добавлено в корзину");
+  }
+
+  function showCart() {
+    title.innerText = "🛒 Корзина";
+    content.innerHTML = "";
+
+    if (cart.length === 0) {
+      content.innerHTML = "<p>Корзина пуста</p>";
+      backButton();
+      return;
+    }
+
+    let total = 0;
+
+    cart.forEach(item => {
+      total += item.price;
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `${item.name} — ${item.price} ₽`;
+      content.appendChild(div);
+    });
+
+    const totalDiv = document.createElement("div");
+    totalDiv.className = "card";
+    totalDiv.innerHTML = `<b>Итого: ${total} ₽</b>`;
+    content.appendChild(totalDiv);
+
+    const orderBtn = document.createElement("button");
+    orderBtn.innerText = "📦 Оформить заказ";
+    orderBtn.onclick = sendOrder;
+    content.appendChild(orderBtn);
+
+    backButton();
+  }
+
+  function sendOrder() {
+    tg.sendData(JSON.stringify(cart));
+    alert("Заказ отправлен!");
+    cart = [];
+    showCategories();
+  }
+
+  function backButton() {
+    const back = document.createElement("button");
+    back.className = "back";
+    back.innerText = "← Назад";
+    back.onclick = showCategories;
+    content.appendChild(back);
+  }
+
+  showCategories();
+</script>
+
+</body>
+</html>
