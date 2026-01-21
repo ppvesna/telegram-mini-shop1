@@ -1,164 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Магазин</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #f5f5f5;
-      padding: 10px;
-    }
-    h2 { text-align: center; }
-
-    .card {
-      background: white;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      background: #0088cc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-
-    .back { background: #777; }
-    .cart { background: #28a745; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Магазин</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px; margin-top: 10px; }
+    </style>
 </head>
 <body>
 
-<h2 id="title">Категории</h2>
-<div id="content"></div>
+<h2>🛒 Магазин</h2>
+
+<div id="products"></div>
+
+<button onclick="sendOrder()">Оформить заказ</button>
 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
+    const tg = window.Telegram.WebApp;
 
-  const categories = {
-    clothes: {
-      name: "🧢 Одежда",
-      products: [
-        { name: "Футболка", price: 1000 },
-        { name: "Кепка", price: 700 }
-      ]
-    },
-    tech: {
-      name: "📱 Электроника",
-      products: [
-        { name: "Наушники", price: 2500 },
-        { name: "Пауэрбанк", price: 3000 }
-      ]
-    }
-  };
+    let cart = [
+        { name: "Товар 1", price: 100 },
+        { name: "Товар 2", price: 200 }
+    ];
 
-  let cart = [];
-
-  const content = document.getElementById("content");
-  const title = document.getElementById("title");
-
-  function showCategories() {
-    title.innerText = "Категории";
-    content.innerHTML = "";
-
-    for (let key in categories) {
-      const btn = document.createElement("button");
-      btn.innerText = categories[key].name;
-      btn.onclick = () => showProducts(key);
-      content.appendChild(btn);
-    }
-
-    const cartBtn = document.createElement("button");
-    cartBtn.className = "cart";
-    cartBtn.innerText = "🛒 Корзина";
-    cartBtn.onclick = showCart;
-    content.appendChild(cartBtn);
-  }
-
-  function showProducts(key) {
-    const cat = categories[key];
-    title.innerText = cat.name;
-    content.innerHTML = "";
-
-    cat.products.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <b>${p.name}</b><br>
-        Цена: ${p.price} ₽
-        <button onclick="addToCart('${p.name}', ${p.price})">
-          Добавить
-        </button>
-      `;
-      content.appendChild(div);
-    });
-
-    backButton();
-  }
-
-  function addToCart(name, price) {
-    cart.push({ name, price });
-    alert("Добавлено в корзину");
-  }
-
-  function showCart() {
-    title.innerText = "🛒 Корзина";
-    content.innerHTML = "";
-
-    if (cart.length === 0) {
-      content.innerHTML = "<p>Корзина пуста</p>";
-      backButton();
-      return;
-    }
-
-    let total = 0;
+    const productsDiv = document.getElementById("products");
 
     cart.forEach(item => {
-      total += item.price;
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `${item.name} — ${item.price} ₽`;
-      content.appendChild(div);
+        const div = document.createElement("div");
+        div.innerHTML = `${item.name} — ${item.price} ₽`;
+        productsDiv.appendChild(div);
     });
 
-    const totalDiv = document.createElement("div");
-    totalDiv.className = "card";
-    totalDiv.innerHTML = `<b>Итого: ${total} ₽</b>`;
-    content.appendChild(totalDiv);
-
-    const orderBtn = document.createElement("button");
-    orderBtn.innerText = "📦 Оформить заказ";
-    orderBtn.onclick = sendOrder;
-    content.appendChild(orderBtn);
-
-    backButton();
-  }
-
-  function sendOrder() {
-    tg.sendData(JSON.stringify(cart));
-    alert("Заказ отправлен!");
-    cart = [];
-    showCategories();
-  }
-
-  function backButton() {
-    const back = document.createElement("button");
-    back.className = "back";
-    back.innerText = "← Назад";
-    back.onclick = showCategories;
-    content.appendChild(back);
-  }
-
-  showCategories();
+    function sendOrder() {
+        tg.sendData(JSON.stringify(cart));
+        tg.close();
+    }
 </script>
 
 </body>
