@@ -4,39 +4,33 @@
     <meta charset="UTF-8">
     <title>Магазин</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        button { padding: 10px; margin-top: 10px; }
-    </style>
 </head>
 <body>
 
 <h2>🛒 Магазин</h2>
 
-<div id="products"></div>
+<div>
+    <p>Товар 1 — 100 ₽</p>
+    <p>Товар 2 — 200 ₽</p>
+</div>
 
-<button onclick="sendOrder()">Оформить заказ</button>
+<button id="orderBtn">Оформить заказ</button>
 
 <script>
     const tg = window.Telegram.WebApp;
 
-    let cart = [
+    // ОБЯЗАТЕЛЬНО
+    tg.ready();
+
+    const order = [
         { name: "Товар 1", price: 100 },
         { name: "Товар 2", price: 200 }
     ];
 
-    const productsDiv = document.getElementById("products");
-
-    cart.forEach(item => {
-        const div = document.createElement("div");
-        div.innerHTML = `${item.name} — ${item.price} ₽`;
-        productsDiv.appendChild(div);
-    });
-
-    function sendOrder() {
-        tg.sendData(JSON.stringify(cart));
+    document.getElementById("orderBtn").addEventListener("click", () => {
+        tg.sendData(JSON.stringify(order));
         tg.close();
-    }
+    });
 </script>
 
 </body>
