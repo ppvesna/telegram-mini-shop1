@@ -25,130 +25,96 @@
     <div id="cart"></div>
     <b id="total"></b>
 
-    <h3>📋 Данные для заказа</h3>
+    <h3>📋 Данные</h3>
     <input id="name" placeholder="Ваше имя">
     <input id="phone" placeholder="Телефон">
 
+    <button id="orderBtn">✅ Оформить заказ</button>
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+const tg = window.Telegram.WebApp;
+tg.ready();
 
-    let cart = [];
+let cart = [];
 
-    const categories = [
-        { id: 1, name: "Одежда" },
-        { id: 2, name: "Электроника" }
-    ];
+const categories = [
+    { id: 1, name: "Одежда" },
+    { id: 2, name: "Электроника" }
+];
 
-    const products = [
-        { id: 1, name: "Футболка", price: 1200, category_id: 1 },
-        { id: 2, name: "Куртка", price: 3500, category_id: 1 },
-        { id: 3, name: "Наушники", price: 2500, category_id: 2 },
-        { id: 4, name: "Мышь", price: 1500, category_id: 2 }
-    ];
+const products = [
+    { id: 1, name: "Футболка", price: 1200, category_id: 1 },
+    { id: 2, name: "Куртка", price: 3500, category_id: 1 },
+    { id: 3, name: "Наушники", price: 2500, category_id: 2 },
+    { id: 4, name: "Мышь", price: 1500, category_id: 2 }
+];
 
-    const catDiv = document.getElementById("categories");
-    const prodDiv = document.getElementById("products");
-    const cartDiv = document.getElementById("cart");
-    const totalDiv = document.getElementById("total");
+const catDiv = document.getElementById("categories");
+const prodDiv = document.getElementById("products");
+const cartDiv = document.getElementById("cart");
+const totalDiv = document.getElementById("total");
 
-    categories.forEach(cat => {
-        const btn = document.createElement("button");
-        btn.innerText = cat.name;
-        btn.onclick = () => showProducts(cat.id);
-        catDiv.appendChild(btn);
+categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.innerText = cat.name;
+    btn.onclick = () => showProducts(cat.id);
+    catDiv.appendChild(btn);
+});
+
+function showProducts(catId) {
+    prodDiv.innerHTML = "";
+    products.filter(p => p.category_id === catId).forEach(p => {
+        const div = document.createElement("div");
+        div.innerHTML = `${p.name} — ${p.price} ₽ 
+            <button onclick='addToCart(${JSON.stringify(p)})'>+</button>`;
+        prodDiv.appendChild(div);
+    });
+}
+
+function addToCart(product) {
+    cart.push(product);
+    renderCart();
+}
+
+function renderCart() {
+    cartDiv.innerHTML = "";
+    let total = 0;
+
+    cart.forEach((item, i) => {
+        total += item.price;
+        cartDiv.innerHTML += `${item.name} — ${item.price} ₽ 
+            <button onclick="removeItem(${i})">❌</button><br>`;
     });
 
-    function showProducts(catId) {
-        prodDiv.innerHTML = "";
-        products.filter(p => p.category_id === catId)
-            .forEach(p => {
-                const div = document.createElement("div");
-                div.className = "product";
-                div.innerHTML = `
-                    ${p.name} — ${p.price} ₽
-                    <button onclick='addToCart(${JSON.stringify(p)})'>+</button>
-                `;
-                prodDiv.appendChild(div);
-            });
-    }
+    totalDiv.innerText = "Итого: " + total + " ₽";
+}
 
-    function addToCart(product) {
-        cart.push(product);
-        renderCart();
-    }
+function removeItem(i) {
+    cart.splice(i, 1);
+    renderCart();
+}
 
-    function renderCart() {
-        cartDiv.innerHTML = "";
-        let total = 0;
-
-        cart.forEach((item, index) => {
-            total += item.price;
-            const div = document.createElement("div");
-            div.innerHTML = `${item.name} — ${item.price} ₽ 
-                <button onclick="removeItem(${index})">❌</button>`;
-            cartDiv.appendChild(div);
-        });
-
-        totalDiv.innerText = "Итого: " + total + " ₽";
-    }
-
-    function removeItem(index) {
-        cart.splice(index, 1);
-        renderCart();
-    }
-
-    function sendOrder() {
-        const name = document.getElementById("name").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-
-        if (!name || !phone) {
-            alert("Введите имя и телефон");
-            return;
-        }
-
-        if (cart.length === 0) {
-            alert("Корзина пуста");
-            return;
-        }
-
-        const order = {
-            name,
-            phone,
-            items: cart
-        };
-
-        tg.sendData(JSON.stringify(order));
-        tg.close();
-    }
-</script>
-<script>
 document.getElementById("orderBtn").onclick = () => {
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+
+    if (!name || !phone || cart.length === 0) {
+        alert("Заполните данные и добавьте товар");
+        return;
+    }
+
     const data = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
+        name,
+        phone,
         items: cart,
         total: cart.reduce((s, i) => s + i.price, 0)
     };
 
-    Telegram.WebApp.sendData(JSON.stringify(data));
-};
-</script>
-<script>
-document.getElementById("orderBtn").onclick = function () {
-    const data = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        items: cart,
-        total: cart.reduce((sum, item) => sum + item.price, 0)
-    };
-
-    Telegram.WebApp.sendData(JSON.stringify(data));
+    tg.sendData(JSON.stringify(data));
 };
 </script>
 
-    
 </body>
 </html>
+
