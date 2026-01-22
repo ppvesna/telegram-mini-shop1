@@ -30,15 +30,6 @@
     <input id="phone" placeholder="Телефон">
 
    
-    document.getElementById("orderBtn").onclick = () => {
-    const data = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        items: cart,
-        total: cart.reduce((s, i) => s + i.price, 0)
-    };
-
-    Telegram.WebApp.sendData(JSON.stringify(data));
 };
 
 </div>
@@ -136,6 +127,19 @@
         tg.close();
     }
 </script>
+<script>
+document.getElementById("orderBtn").onclick = () => {
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        items: cart,
+        total: cart.reduce((s, i) => s + i.price, 0)
+    };
 
+    Telegram.WebApp.sendData(JSON.stringify(data));
+};
+</script>
+
+    
 </body>
 </html>
