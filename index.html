@@ -29,7 +29,18 @@
     <input id="name" placeholder="Ваше имя">
     <input id="phone" placeholder="Телефон">
 
-    <button onclick="sendOrder()">Оформить заказ</button>
+   
+    document.getElementById("orderBtn").onclick = () => {
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        items: cart,
+        total: cart.reduce((s, i) => s + i.price, 0)
+    };
+
+    Telegram.WebApp.sendData(JSON.stringify(data));
+};
+
 </div>
 
 <script>
